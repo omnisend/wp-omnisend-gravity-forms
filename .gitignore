@@ -1,0 +1,24 @@
+ woocommerce-omnisend/.vscode/*
+.vscode/*
+.idea/*
+.svn
+
+# These are needed when repo is checked out at the location of working WordPress site
+.DS_Store
+akismet/
+hello.php
+index.php
+klaviyo
+mailchimp-for-woocommerce
+woocommerce
+wp-crontrol
+code-snippets
+
+# Composer
+composer.phar
+/vendor/
+# Local wordpress setup
+.wordpress
+.env
+
+*.zip

@@ -1,0 +1,16 @@
+name: Release plugin
+
+on: [workflow_dispatch]
+jobs:
+    svn:
+        name: Release new tag
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@main
+            - name: WordPress Plugin Deploy
+              uses: omnisend/action-wordpress-plugin-deploy@v1.0.3
+              env:
+                  SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
+                  SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
+                  SLUG: omnisend-for-gravity-forms-add-on
+                  BUILD_DIR: omnisend-for-gravity-forms

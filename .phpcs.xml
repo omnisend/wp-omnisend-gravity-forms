@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<ruleset name="Custom Standard" namespace="Omnisend\CS\Standard">
+  <rule ref="WordPress">
+    <exclude-pattern>*.js</exclude-pattern>
+
+    <exclude name="Generic.Commenting.DocComment" />
+    <exclude name="Squiz.Commenting.ClassComment" />
+    <exclude name="Squiz.Commenting.FunctionComment" />
+    <exclude name="Squiz.Commenting.VariableComment" />
+    <exclude name="Squiz.Commenting.BlockComment" />
+    <exclude name="Universal.Operators.StrictComparisons" />
+    <exclude name="Universal.Files.SeparateFunctionsFromOO" />
+    <exclude name="WordPress.PHP.YodaConditions" />
+    <exclude name="WordPress.PHP.StrictInArray" />
+  </rule>
+</ruleset>
