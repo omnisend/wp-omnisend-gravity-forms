@@ -15,15 +15,15 @@ GFForms::include_addon_framework();
 
 class OmnisendAddOn extends GFAddOn {
 
-	protected $_version                  = OMNISEND_GRAVITY_ADDON_VERSION;
-	protected $_min_gravityforms_version = '1.9';
-	protected $_slug                     = 'omnisend-for-gravity-forms-add-on';
-	protected $_path                     = 'omnisend-for-gravity-forms/class-omnisend-addon-bootstrap.php';
-	protected $_full_path                = __FILE__;
-	protected $_title                    = 'Omnisend for Gravity Forms';
-	protected $_short_title              = 'Omnisend';
+	protected $_version                  = OMNISEND_GRAVITY_ADDON_VERSION; // phpcs:ignore
+	protected $_min_gravityforms_version = '1.9'; // phpcs:ignore
+	protected $_slug                     = 'omnisend-for-gravity-forms-add-on'; // phpcs:ignore
+	protected $_path                     = 'omnisend-for-gravity-forms/class-omnisend-addon-bootstrap.php'; // phpcs:ignore
+	protected $_full_path                = __FILE__; // phpcs:ignore
+	protected $_title                    = 'Omnisend for Gravity Forms'; // phpcs:ignore
+	protected $_short_title              = 'Omnisend'; // phpcs:ignore
 
-	private static $_instance = null;
+	private static $_instance = null; // phpcs:ignore
 
 
 	public function minimum_requirements() {
@@ -358,7 +358,8 @@ class OmnisendAddOn extends GFAddOn {
 			$this->enableWebTracking( $email, $phone_number );
 
 		} catch ( Exception $e ) {
-			error_log( 'Error in after_submission: ' . $e->getMessage() ); // todo check if it is possible to get exception? If not remove handling
+			// todo check if it is possible to get exception? If not remove handling.
+			error_log( 'Error in after_submission: ' . $e->getMessage() ); // phpcs:ignore
 		}
 	}
 
@@ -397,7 +398,7 @@ class OmnisendAddOn extends GFAddOn {
 	}
 
 	public function get_menu_icon() {
-		return file_get_contents( $this->get_base_path() . '/images/menu-icon.svg' );
+		return wp_remote_get( $this->get_base_path() . '/images/menu-icon.svg' );
 	}
 
 	private function enableWebTracking( $email, $phone ) {
@@ -414,7 +415,7 @@ class OmnisendAddOn extends GFAddOn {
 		wp_localize_script( 'omnisend-snippet-script', 'omnisendIdentifiers', $identifiers );
 	}
 
-	public function settings_welcome_automation_details( $field, $echo = true ) {
+	public function settings_welcome_automation_details( $field, $echo = true ) { // phpcs:ignore
 		echo '<div class="gform-settings-field">' . esc_html__( 'After checking this, don’t forget to design your welcome email in Omnisend.', 'omnisend-for-gravity-forms-add-on' ) . '</div>';
 		echo '<a target="_blank" href="https://support.omnisend.com/en/articles/1061818-welcome-email-automation">' . esc_html__( 'Learn more about Welcome automation', 'omnisend-for-gravity-forms-add-on' ) . '</a>';
 	}
@@ -423,7 +424,7 @@ class OmnisendAddOn extends GFAddOn {
 	public function settings_field_mapping_details() {
 		echo '<div class="gform-settings-field">' . esc_html__( 'Field mapping lets you align your form fields with Omnisend. It\'s important to match them correctly, so the information collected through Gravity Forms goes into the right place in Omnisend.', 'omnisend-for-gravity-forms-add-on' ) . '</div>';
 
-		echo '<img width="900" src="' . plugins_url( '/images/omnisend-field-mapping.png', __FILE__ ) . '" alt="Omnisend Field Mapping" />';
+		echo '<img width="900" src="' . plugins_url( '/images/omnisend-field-mapping.png', __FILE__ ) . '" alt="Omnisend Field Mapping" />'; // phpcs:ignore
 
 		echo '<div class="alert gforms_note_info">' . esc_html__( 'Having trouble? Explore our help article.', 'omnisend-for-gravity-forms-add-on' ) . '<br/><a target="_blank" href="https://support.omnisend.com/en/articles/8617559-integration-with-gravity-forms">' . esc_html__( 'Learn more', 'omnisend-for-gravity-forms-add-on' ) . '</a></div>';
 	}
