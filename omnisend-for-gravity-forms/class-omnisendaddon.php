@@ -340,7 +340,7 @@ class OmnisendAddOn extends GFAddOn {
 			}
 
 			if ( $phone_consent ) {
-				$contact->set_phone_consent( 'gravity-forms' );
+				$contact->set_phone_consent( 'gravity-forms' ); // todo looks a bit strange. Maybe one function is enough?
 				$contact->set_phone_opt_in( 'gravity-forms' );
 			}
 
