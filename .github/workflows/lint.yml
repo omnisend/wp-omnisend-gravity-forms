@@ -1,0 +1,21 @@
+name: PHP Standards
+run-name: PHP Standards 🔀 ${{ github.ref_name }}
+
+on: push
+
+jobs:
+  Lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Validate composer.json and composer.lock
+        run: composer validate --strict
+
+      - name: Install dependencies
+        run: |
+          composer install --prefer-dist --no-progress
+
+      - name: Lint PHP files
+        run: ./lint.sh check
