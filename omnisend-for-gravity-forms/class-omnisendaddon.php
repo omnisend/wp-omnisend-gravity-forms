@@ -269,8 +269,8 @@ class OmnisendAddOn extends GFAddOn {
 		}
 
 		try {
-			$contact       = new Contact();
-			$settings      = $this->get_form_settings( $form );
+			$contact  = new Contact();
+			$settings = $this->get_form_settings( $form );
 
 			$fields_to_process = array(
 				'email',
@@ -287,16 +287,16 @@ class OmnisendAddOn extends GFAddOn {
 				'phone_consent',
 			);
 
-			$email        = '';
-			$phone_number = '';
-			$postal_code  = '';
-			$address      = '';
-			$country      = '';
-			$city         = '';
-			$state        = '';
-			$first_name   = '';
-			$last_name    = '';
-			$birthday     = '';
+			$email         = '';
+			$phone_number  = '';
+			$postal_code   = '';
+			$address       = '';
+			$country       = '';
+			$city          = '';
+			$state         = '';
+			$first_name    = '';
+			$last_name     = '';
+			$birthday      = '';
 			$email_consent = false;
 			$phone_consent = false;
 
@@ -318,7 +318,6 @@ class OmnisendAddOn extends GFAddOn {
 			}
 
 			$contact->set_email( $email );
-
 
 			if ( $phone_number != '' ) {
 				$contact->set_phone( $phone_number );
@@ -357,7 +356,6 @@ class OmnisendAddOn extends GFAddOn {
 				return;
 			}
 
-
 			$this->enableWebTracking( $email, $phone_number );
 
 		} catch ( Exception $e ) {
@@ -366,7 +364,7 @@ class OmnisendAddOn extends GFAddOn {
 	}
 
 	private function mapCustomProperties( $form, $entry, $settings, Contact $contact ) {
-		$prefix            = 'gravity_forms_';
+		$prefix = 'gravity_forms_';
 		foreach ( $form['fields'] as $field ) {
 			$field_id    = $field['id'];
 			$field_label = $field['label'];
@@ -428,6 +426,6 @@ class OmnisendAddOn extends GFAddOn {
 
 		echo '<img width="900" src="' . plugins_url( '/images/omnisend-field-mapping.png', __FILE__ ) . '" alt="Omnisend Field Mapping" />';
 
-		echo '<div class="alert gforms_note_info">' . esc_html__( 'Having trouble? Explore our help article.', 'omnisend-for-gravity-forms-add-on' ) . '<br/>' . '<a target="_blank" href="https://support.omnisend.com/en/articles/8617559-integration-with-gravity-forms">' . esc_html__( 'Learn more', 'omnisend-for-gravity-forms-add-on' ) . '</a>' . '</div>';
+		echo '<div class="alert gforms_note_info">' . esc_html__( 'Having trouble? Explore our help article.', 'omnisend-for-gravity-forms-add-on' ) . '<br/><a target="_blank" href="https://support.omnisend.com/en/articles/8617559-integration-with-gravity-forms">' . esc_html__( 'Learn more', 'omnisend-for-gravity-forms-add-on' ) . '</a></div>';
 	}
 }
