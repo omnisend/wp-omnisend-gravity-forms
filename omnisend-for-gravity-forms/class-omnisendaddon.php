@@ -351,7 +351,6 @@ class OmnisendAddOn extends GFAddOn {
 			$this->mapCustomProperties( $form, $entry, $settings, $contact );
 
 			$response = \Omnisend\Public\V1\Omnisend::get_client( OMNISEND_GRAVITY_ADDON_NAME, OMNISEND_GRAVITY_ADDON_VERSION )->create_contact( $contact );
-			error_log( print_r( $response, 1 ) );
 			if ( ! is_string( $response ) ) {
 				return;
 			}
