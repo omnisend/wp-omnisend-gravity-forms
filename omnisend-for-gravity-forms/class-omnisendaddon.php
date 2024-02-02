@@ -5,6 +5,8 @@
  * @package OmnisendGravityFormsPlugin
  */
 
+use Omnisend\Public\V1\Contact;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -27,17 +29,26 @@ class OmnisendAddOn extends GFAddOn {
 	public function minimum_requirements() {
 		return array(
 			'plugins' => array(
-				'omnisend-connect/omnisend-woocommerce.php',
+				'omnisend/class-omnisend-core-bootstrap.php' => 'Email Marketing by Omnisend',
 			),
-			array( $this, 'omnisend_api_key_existence' ),
+			array( $this, 'omnisend_connected' ),
 		);
 	}
 
-	public function omnisend_api_key_existence( $meets_requirements ) {
-		$api_key = get_option( 'omnisend_api_key', null );
-		if ( is_null( $api_key ) ) {
+	public function omnisend_connected( $meets_requirements ) {
+		if ( ! is_plugin_active( 'omnisend/class-omnisend-core-bootstrap.php' ) ) {
+			return array( 'meets_requirements' => true ); // Covered with "minimum_requirements" function, no plugin - no need to check more.
+		}
+
+		if ( ! class_exists( 'Omnisend\Public\V1\Omnisend' ) ) {
 			$meets_requirements['meets_requirements'] = false;
-			$meets_requirements['errors'][]           = 'Your Email Marketing for WooCommerce by Omnisend is not configured properly. Please configure it firstly';
+			$meets_requirements['errors'][]           = 'Your Email Marketing by Omnisend is not up to date. Please update plugins';
+			return $meets_requirements;
+		}
+
+		if ( ! Omnisend\Public\V1\Omnisend::is_connected() ) {
+			$meets_requirements['meets_requirements'] = false;
+			$meets_requirements['errors'][]           = 'Your Email Marketing by Omnisend is not configured properly. Please configure it firstly';
 		}
 		return $meets_requirements;
 	}
@@ -253,11 +264,12 @@ class OmnisendAddOn extends GFAddOn {
 	 * @param array $form The form currently being processed.
 	 */
 	public function after_submission( $entry, $form ) {
-		if ( ! is_plugin_active( 'omnisend-connect/omnisend-woocommerce.php' ) ) {
+		if ( ! class_exists( 'Omnisend\Public\V1\Omnisend' ) ) {
 			return;
 		}
 
 		try {
+			$contact       = new Contact();
 			$settings      = $this->get_form_settings( $form );
 			$email_consent = 'nonSubscribed';
 			$phone_consent = 'nonSubscribed';
@@ -310,6 +322,7 @@ class OmnisendAddOn extends GFAddOn {
 
 			$identifiers = array();
 			if ( $email != '' ) {
+				$contact->set_email( 'n_' . $email );
 				$email_identifier = array(
 					'type'     => 'email',
 					'channels' => array(
@@ -331,6 +344,7 @@ class OmnisendAddOn extends GFAddOn {
 			}
 
 			if ( $phone_number != '' ) {
+				$contact->set_phone( '1_' . $phone_number );
 				$phone_identifier = array(
 					'type'     => 'phone',
 					'channels' => array(
@@ -361,6 +375,15 @@ class OmnisendAddOn extends GFAddOn {
 				'send_welcome_email' => 'sendWelcomeEmail',
 			);
 
+			$contact->set_first_name( $first_name );
+			$contact->set_last_name( $last_name );
+			$contact->set_birthday( $birthday );
+			$contact->set_postal_code( $postal_code );
+			$contact->set_address( $address );
+			$contact->set_state( $state );
+			$contact->set_country( $country );
+			$contact->set_city( $city );
+
 			foreach ( $fields_to_data_keys as $variable => $data_key ) {
 				if ( ! empty( $$variable ) ) {
 					$data[ $data_key ] = $$variable;
@@ -368,19 +391,36 @@ class OmnisendAddOn extends GFAddOn {
 			}
 
 			$form_name    = preg_replace( '/[^A-Za-z0-9\-]/', '', $form['title'] );
-			$data['tags'] = array( 'gravity_forms', 'gravity_forms ' . $form_name );
+			$data['tags'] = array( 'gravity_forms', 'gravity_forms ' . $form['title'] );
+
+			$contact->add_tag( 'gravity_forms' );
+			$contact->add_tag( 'gravity_forms ' . $form['title'] );
+
+			if ( 'subscribed' == $email_consent ) {
+				$contact->set_email_consent( 'gravity-forms' );
+				$contact->set_email_opt_in( 'gravity-forms' );
+			}
+
+			if ( 'subscribed' == $phone_consent ) {
+				$contact->set_phone_consent( 'gravity-forms' );
+				$contact->set_phone_opt_in( 'gravity-forms' );
+			}
 
 			if (
 				isset( $settings['send_welcome_email'] ) &&
 				$settings['send_welcome_email'] == '1'
 			) {
 				$data['sendWelcomeEmail'] = true;
+				$contact->set_welcome_email( true );
 			}
 
-			$custom_properties = $this->mapCustomProperties( $form, $entry, $settings, array_keys( $data ) );
+			$custom_properties = $this->mapCustomProperties( $form, $entry, $settings, $contact );
 			if ( ! empty( $custom_properties ) ) {
 				$data['customProperties'] = (object) $custom_properties;
 			}
+
+			$response = \Omnisend\Public\V1\Omnisend::get_client( OMNISEND_GRAVITY_ADDON_NAME, OMNISEND_GRAVITY_ADDON_VERSION )->create_contact( $contact );
+			error_log( print_r( $response, 1 ) );
 
 			if ( ! $this->createOmnisendContact( $data ) ) {
 				return;
@@ -424,7 +464,7 @@ class OmnisendAddOn extends GFAddOn {
 	}
 
 
-	private function mapCustomProperties( $form, $entry, $settings, $excluded_fields ) {
+	private function mapCustomProperties( $form, $entry, $settings, Contact $contact ) {
 		$custom_properties = array();
 		$prefix            = 'gravity_forms_';
 		foreach ( $form['fields'] as $field ) {
@@ -441,6 +481,7 @@ class OmnisendAddOn extends GFAddOn {
 					// Check if the value is set and not empty.
 					if ( ! empty( $entry[ $field_id ] ) ) {
 						$custom_properties[ $prefix . $safe_label ] = $entry[ $field_id ];
+						$contact->add_custom_property( $prefix . $safe_label, $entry[ $field_id ] );
 					}
 				} else {
 					$selected_choices = array();
@@ -455,6 +496,7 @@ class OmnisendAddOn extends GFAddOn {
 					// Only add to customProperties if selectedChoices is not empty.
 					if ( ! empty( $selected_choices ) ) {
 						$custom_properties[ $prefix . $safe_label ] = $selected_choices;
+						$contact->add_custom_property( $prefix . $safe_label, $selected_choices );
 					}
 				}
 			}

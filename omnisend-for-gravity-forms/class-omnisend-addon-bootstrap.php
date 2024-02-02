@@ -20,7 +20,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'OMNISEND_GRAVITY_ADDON_VERSION', '1.0.4' );
+const OMNISEND_GRAVITY_ADDON_NAME    = 'Omnisend for Gravity Forms Add-On';
+const OMNISEND_GRAVITY_ADDON_VERSION = '1.0.4';
 
 add_action( 'gform_loaded', array( 'Omnisend_AddOn_Bootstrap', 'load' ), 5 );
 
