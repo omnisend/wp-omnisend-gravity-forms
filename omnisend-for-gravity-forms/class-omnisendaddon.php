@@ -5,6 +5,8 @@
  * @package OmnisendGravityFormsPlugin
  */
 
+use Omnisend\Public\V1\Contact;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -13,31 +15,41 @@ GFForms::include_addon_framework();
 
 class OmnisendAddOn extends GFAddOn {
 
-	protected $_version                  = OMNISEND_GRAVITY_ADDON_VERSION;
-	protected $_min_gravityforms_version = '1.9';
-	protected $_slug                     = 'omnisend-for-gravity-forms-add-on';
-	protected $_path                     = 'omnisend-for-gravity-forms/class-omnisend-addon-bootstrap.php';
-	protected $_full_path                = __FILE__;
-	protected $_title                    = 'Omnisend for Gravity Forms';
-	protected $_short_title              = 'Omnisend';
+	protected $_version                  = OMNISEND_GRAVITY_ADDON_VERSION; // phpcs:ignore
+	protected $_min_gravityforms_version = '1.9'; // phpcs:ignore
+	protected $_slug                     = 'omnisend-for-gravity-forms-add-on'; // phpcs:ignore
+	protected $_path                     = 'omnisend-for-gravity-forms/class-omnisend-addon-bootstrap.php'; // phpcs:ignore
+	protected $_full_path                = __FILE__; // phpcs:ignore
+	protected $_title                    = 'Omnisend for Gravity Forms'; // phpcs:ignore
+	protected $_short_title              = 'Omnisend'; // phpcs:ignore
 
-	private static $_instance = null;
+	private static $_instance = null; // phpcs:ignore
 
 
 	public function minimum_requirements() {
 		return array(
 			'plugins' => array(
-				'omnisend-connect/omnisend-woocommerce.php',
+				'omnisend/class-omnisend-core-bootstrap.php' => 'Email Marketing by Omnisend',
 			),
-			array( $this, 'omnisend_api_key_existence' ),
+			array( $this, 'omnisend_custom_requirement_callback' ),
 		);
 	}
 
-	public function omnisend_api_key_existence( $meets_requirements ) {
-		$api_key = get_option( 'omnisend_api_key', null );
-		if ( is_null( $api_key ) ) {
+	public function omnisend_custom_requirement_callback( $meets_requirements ) {
+
+		if ( ! is_plugin_active( 'omnisend/class-omnisend-core-bootstrap.php' ) ) {
+			return $meets_requirements;
+		}
+
+		if ( ! class_exists( 'Omnisend\Public\V1\Omnisend' ) ) {
 			$meets_requirements['meets_requirements'] = false;
-			$meets_requirements['errors'][]           = 'Your Email Marketing for WooCommerce by Omnisend is not configured properly. Please configure it firstly';
+			$meets_requirements['errors'][]           = 'Your Email Marketing by Omnisend is not up to date. Please update plugins';
+			return $meets_requirements;
+		}
+
+		if ( ! Omnisend\Public\V1\Omnisend::is_connected() ) {
+			$meets_requirements['meets_requirements'] = false;
+			$meets_requirements['errors'][]           = 'Your Email Marketing by Omnisend is not configured properly. Please configure it firstly';
 		}
 		return $meets_requirements;
 	}
@@ -253,21 +265,13 @@ class OmnisendAddOn extends GFAddOn {
 	 * @param array $form The form currently being processed.
 	 */
 	public function after_submission( $entry, $form ) {
-		if ( ! is_plugin_active( 'omnisend-connect/omnisend-woocommerce.php' ) ) {
+		if ( ! class_exists( 'Omnisend\Public\V1\Omnisend' ) ) {
 			return;
 		}
 
 		try {
-			$settings      = $this->get_form_settings( $form );
-			$email_consent = 'nonSubscribed';
-			$phone_consent = 'nonSubscribed';
-
-			$consent_object = array(
-				'source'    => 'gravity-forms',
-				'createdAt' => gmdate( 'c' ),
-				'ip'        => $entry['ip'],
-				'userAgent' => $entry['user_agent'],
-			);
+			$contact  = new Contact();
+			$settings = $this->get_form_settings( $form );
 
 			$fields_to_process = array(
 				'email',
@@ -284,23 +288,25 @@ class OmnisendAddOn extends GFAddOn {
 				'phone_consent',
 			);
 
-			$email        = '';
-			$phone_number = '';
-			$postal_code  = '';
-			$address      = '';
-			$country      = '';
-			$city         = '';
-			$state        = '';
-			$first_name   = '';
-			$last_name    = '';
-			$birthday     = '';
+			$email         = '';
+			$phone_number  = '';
+			$postal_code   = '';
+			$address       = '';
+			$country       = '';
+			$city          = '';
+			$state         = '';
+			$first_name    = '';
+			$last_name     = '';
+			$birthday      = '';
+			$email_consent = false;
+			$phone_consent = false;
 
 			foreach ( $fields_to_process as $field ) {
 
 				if ( isset( $settings[ $field ] ) && $settings[ $field ] != '-1' ) {
 					if ( in_array( $field, array( 'email_consent', 'phone_consent' ) ) ) {
 						if ( $entry[ $settings[ $field ] ] == '1' ) {
-							${$field} = 'subscribed';
+							${$field} = true;
 						}
 					} else {
 						${$field} = $entry[ $settings[ $field ] ];
@@ -308,139 +314,76 @@ class OmnisendAddOn extends GFAddOn {
 				}
 			}
 
-			$identifiers = array();
-			if ( $email != '' ) {
-				$email_identifier = array(
-					'type'     => 'email',
-					'channels' => array(
-						'email' => array(
-							'status'     => $email_consent,
-							'statusDate' => gmdate( 'c' ),
-						),
-					),
-					'id'       => $email,
-				);
+			if ( $email == '' ) {
+				return; // Email is not mapped. Skipping Omnisend contact creation.
+			}
 
-				if ( $email_consent == 'subscribed' ) {
-					$email_identifier['consent'] = $consent_object;
-				}
-				array_push( $identifiers, $email_identifier );
-			} else {
-				error_log( 'Email is not mapped. Skipping Omnisend contact creation.' );
+			$contact->set_email( $email );
+
+			if ( $phone_number != '' ) {
+				$contact->set_phone( $phone_number );
+			}
+
+			$contact->set_first_name( $first_name );
+			$contact->set_last_name( $last_name );
+			$contact->set_birthday( $birthday );
+			$contact->set_postal_code( $postal_code );
+			$contact->set_address( $address );
+			$contact->set_state( $state );
+			$contact->set_country( $country );
+			$contact->set_city( $city );
+			$contact->add_tag( 'gravity_forms' );
+			$contact->add_tag( 'gravity_forms ' . $form['title'] );
+
+			if ( $email_consent ) {
+				$contact->set_email_consent( 'gravity-forms' );
+				$contact->set_email_opt_in( 'gravity-forms' );
+			}
+
+			if ( $phone_consent ) {
+				$contact->set_phone_consent( 'gravity-forms' ); // todo looks a bit strange. Maybe one function is enough?
+				$contact->set_phone_opt_in( 'gravity-forms' );
+			}
+
+			if ( isset( $settings['send_welcome_email'] ) && $settings['send_welcome_email'] == '1' ) {
+				$contact->set_welcome_email( true );
+			}
+
+			$this->mapCustomProperties( $form, $entry, $settings, $contact );
+
+			$response = \Omnisend\Public\V1\Omnisend::get_client( OMNISEND_GRAVITY_ADDON_NAME, OMNISEND_GRAVITY_ADDON_VERSION )->create_contact( $contact );
+			if ( is_wp_error( $response ) ) {
+				error_log( 'Error in after_submission: ' . $response->get_error_message()); // phpcs:ignore
 				return;
 			}
 
-			if ( $phone_number != '' ) {
-				$phone_identifier = array(
-					'type'     => 'phone',
-					'channels' => array(
-						'sms' => array(
-							'status'     => $phone_consent,
-							'statusDate' => gmdate( 'c' ),
-						),
-					),
-					'id'       => $phone_number,
-				);
-				if ( $phone_consent == 'subscribed' ) {
-					$phone_identifier['consent'] = $consent_object;
-				}
-
-				array_push( $identifiers, $phone_identifier );
-			}
-
-			$data                = array( 'identifiers' => $identifiers );
-			$fields_to_data_keys = array(
-				'first_name'         => 'firstName',
-				'last_name'          => 'lastName',
-				'birthday'           => 'birthdate',
-				'postal_code'        => 'postalCode',
-				'address'            => 'address',
-				'state'              => 'state',
-				'country'            => 'country',
-				'city'               => 'city',
-				'send_welcome_email' => 'sendWelcomeEmail',
-			);
-
-			foreach ( $fields_to_data_keys as $variable => $data_key ) {
-				if ( ! empty( $$variable ) ) {
-					$data[ $data_key ] = $$variable;
-				}
-			}
-
-			$form_name    = preg_replace( '/[^A-Za-z0-9\-]/', '', $form['title'] );
-			$data['tags'] = array( 'gravity_forms', 'gravity_forms ' . $form_name );
-
-			if (
-				isset( $settings['send_welcome_email'] ) &&
-				$settings['send_welcome_email'] == '1'
-			) {
-				$data['sendWelcomeEmail'] = true;
-			}
-
-			$custom_properties = $this->mapCustomProperties( $form, $entry, $settings, array_keys( $data ) );
-			if ( ! empty( $custom_properties ) ) {
-				$data['customProperties'] = (object) $custom_properties;
-			}
-
-			if ( ! $this->createOmnisendContact( $data ) ) {
+			if ( ! is_string( $response ) ) {
+				error_log( 'Unexpected error. Please contact Omnisend support.'); // phpcs:ignore
 				return;
 			}
 
 			$this->enableWebTracking( $email, $phone_number );
 
 		} catch ( Exception $e ) {
-			error_log( 'Error in after_submission: ' . $e->getMessage() );
+			// todo check if it is possible to get exception? If not remove handling.
+			error_log( 'Error in after_submission: ' . $e->getMessage() ); // phpcs:ignore
 		}
 	}
 
-	private function createOmnisendContact( $body ) {
-		$api_key  = get_option( 'omnisend_api_key', null );
-		$endpoint = 'https://api.omnisend.com/v3/contacts';
-
-		$data = array(
-			'body'    => wp_json_encode( $body ),
-			'headers' => array(
-				'Content-Type' => 'application/json',
-				'X-API-Key'    => $api_key,
-			),
-			'timeout' => 10,
-		);
-
-		$response = wp_remote_post( $endpoint, $data );
-
-		if ( is_wp_error( $response ) ) {
-			error_log( 'wp_remote_post error: ' . $response->get_error_message() );
-			return false;
-		}
-
-		$http_code = wp_remote_retrieve_response_code( $response );
-		if ( $http_code >= 400 ) {
-			$body = wp_remote_retrieve_body( $response );
-			error_log( "HTTP error: {$http_code} - " . wp_remote_retrieve_response_message( $response ) . " - {$body}" );
-			return false;
-		}
-
-		return true;
-	}
-
-
-	private function mapCustomProperties( $form, $entry, $settings, $excluded_fields ) {
-		$custom_properties = array();
-		$prefix            = 'gravity_forms_';
+	private function mapCustomProperties( $form, $entry, $settings, Contact $contact ) {
+		$prefix = 'gravity_forms_';
 		foreach ( $form['fields'] as $field ) {
 			$field_id    = $field['id'];
 			$field_label = $field['label'];
 
 			if ( ! in_array( $field_id, $settings ) || $settings[ array_search( $field_id, $settings ) ] === '-1' ) {
 				// Replace spaces with underscores, remove invalid characters, lowercase.
-				$safe_label = str_replace( ' ', '_', $field_label );
-				$safe_label = preg_replace( '/[^A-Za-z0-9_]/', '', $safe_label );
-				$safe_label = strtolower( $safe_label );
+				$safe_label = strtolower( str_replace( ' ', '_', $field_label ) );
 
 				if ( $field['type'] !== 'checkbox' ) {
 					// Check if the value is set and not empty.
 					if ( ! empty( $entry[ $field_id ] ) ) {
-						$custom_properties[ $prefix . $safe_label ] = $entry[ $field_id ];
+						$contact->add_custom_property( $prefix . $safe_label, $entry[ $field_id ] );
 					}
 				} else {
 					$selected_choices = array();
@@ -454,16 +397,15 @@ class OmnisendAddOn extends GFAddOn {
 					}
 					// Only add to customProperties if selectedChoices is not empty.
 					if ( ! empty( $selected_choices ) ) {
-						$custom_properties[ $prefix . $safe_label ] = $selected_choices;
+						$contact->add_custom_property( $prefix . $safe_label, $selected_choices );
 					}
 				}
 			}
 		}
-		return $custom_properties;
 	}
 
 	public function get_menu_icon() {
-		return file_get_contents( $this->get_base_path() . '/images/menu-icon.svg' );
+		return file_get_contents( $this->get_base_path() . '/images/menu-icon.svg' ); // phpcs:ignore
 	}
 
 	private function enableWebTracking( $email, $phone ) {
@@ -480,7 +422,7 @@ class OmnisendAddOn extends GFAddOn {
 		wp_localize_script( 'omnisend-snippet-script', 'omnisendIdentifiers', $identifiers );
 	}
 
-	public function settings_welcome_automation_details( $field, $echo = true ) {
+	public function settings_welcome_automation_details( $field, $echo = true ) { // phpcs:ignore
 		echo '<div class="gform-settings-field">' . esc_html__( 'After checking this, don’t forget to design your welcome email in Omnisend.', 'omnisend-for-gravity-forms-add-on' ) . '</div>';
 		echo '<a target="_blank" href="https://support.omnisend.com/en/articles/1061818-welcome-email-automation">' . esc_html__( 'Learn more about Welcome automation', 'omnisend-for-gravity-forms-add-on' ) . '</a>';
 	}
@@ -489,8 +431,8 @@ class OmnisendAddOn extends GFAddOn {
 	public function settings_field_mapping_details() {
 		echo '<div class="gform-settings-field">' . esc_html__( 'Field mapping lets you align your form fields with Omnisend. It\'s important to match them correctly, so the information collected through Gravity Forms goes into the right place in Omnisend.', 'omnisend-for-gravity-forms-add-on' ) . '</div>';
 
-		echo '<img width="900" src="' . plugins_url( '/images/omnisend-field-mapping.png', __FILE__ ) . '" alt="Omnisend Field Mapping" />';
+		echo '<img width="900" src="' . plugins_url( '/images/omnisend-field-mapping.png', __FILE__ ) . '" alt="Omnisend Field Mapping" />'; // phpcs:ignore
 
-		echo '<div class="alert gforms_note_info">' . esc_html__( 'Having trouble? Explore our help article.', 'omnisend-for-gravity-forms-add-on' ) . '<br/>' . '<a target="_blank" href="https://support.omnisend.com/en/articles/8617559-integration-with-gravity-forms">' . esc_html__( 'Learn more', 'omnisend-for-gravity-forms-add-on' ) . '</a>' . '</div>';
+		echo '<div class="alert gforms_note_info">' . esc_html__( 'Having trouble? Explore our help article.', 'omnisend-for-gravity-forms-add-on' ) . '<br/><a target="_blank" href="https://support.omnisend.com/en/articles/8617559-integration-with-gravity-forms">' . esc_html__( 'Learn more', 'omnisend-for-gravity-forms-add-on' ) . '</a></div>';
 	}
 }
