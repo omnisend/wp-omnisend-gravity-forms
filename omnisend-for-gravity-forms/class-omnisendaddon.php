@@ -31,13 +31,14 @@ class OmnisendAddOn extends GFAddOn {
 			'plugins' => array(
 				'omnisend/class-omnisend-core-bootstrap.php' => 'Email Marketing by Omnisend',
 			),
-			array( $this, 'omnisend_connected' ),
+			array( $this, 'omnisend_custom_requirement_callback' ),
 		);
 	}
 
-	public function omnisend_connected( $meets_requirements ) {
+	public function omnisend_custom_requirement_callback( $meets_requirements ) {
+
 		if ( ! is_plugin_active( 'omnisend/class-omnisend-core-bootstrap.php' ) ) {
-			return array( 'meets_requirements' => true ); // Covered with "minimum_requirements" function, no plugin - no need to check more.
+			return $meets_requirements;
 		}
 
 		if ( ! class_exists( 'Omnisend\Public\V1\Omnisend' ) ) {
@@ -351,7 +352,13 @@ class OmnisendAddOn extends GFAddOn {
 			$this->mapCustomProperties( $form, $entry, $settings, $contact );
 
 			$response = \Omnisend\Public\V1\Omnisend::get_client( OMNISEND_GRAVITY_ADDON_NAME, OMNISEND_GRAVITY_ADDON_VERSION )->create_contact( $contact );
+			if ( is_wp_error( $response ) ) {
+				error_log( 'Error in after_submission: ' . $response->get_error_message()); // phpcs:ignore
+				return;
+			}
+
 			if ( ! is_string( $response ) ) {
+				error_log( 'Unexpected error. Please contact Omnisend support.'); // phpcs:ignore
 				return;
 			}
 
@@ -398,7 +405,7 @@ class OmnisendAddOn extends GFAddOn {
 	}
 
 	public function get_menu_icon() {
-		return wp_remote_get( $this->get_base_path() . '/images/menu-icon.svg' );
+		return file_get_contents( $this->get_base_path() . '/images/menu-icon.svg' ); // phpcs:ignore
 	}
 
 	private function enableWebTracking( $email, $phone ) {
