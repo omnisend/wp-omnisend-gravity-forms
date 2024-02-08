@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Omnisend for Gravity Forms Add-On
  * Description: A gravity forms add-on to sync contacts with Omnisend. In collaboration with Omnisnnd for WooCommerce plugin it enables better customer tracking
- * Version: 1.1.0
+ * Version: 1.1.1
  * Author: Omnisend
  * Author URI: https://www.omnisend.com
  * Developer: Omnisend
