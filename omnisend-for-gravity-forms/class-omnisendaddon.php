@@ -357,11 +357,6 @@ class OmnisendAddOn extends GFAddOn {
 				return;
 			}
 
-			if ( ! $response->get_contact_id() ) {
-				error_log( 'Unexpected error. Please contact Omnisend support.'); // phpcs:ignore
-				return;
-			}
-
 			$this->enableWebTracking( $email, $phone_number );
 
 		} catch ( Exception $e ) {
