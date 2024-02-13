@@ -5,7 +5,7 @@
  * @package OmnisendGravityFormsPlugin
  */
 
-use Omnisend\Sdk\V1\Contact;
+use Omnisend\SDK\V1\Contact;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -41,13 +41,13 @@ class OmnisendAddOn extends GFAddOn {
 			return $meets_requirements;
 		}
 
-		if ( ! class_exists( 'Omnisend\Sdk\V1\Omnisend' ) ) {
+		if ( ! class_exists( 'Omnisend\SDK\V1\Omnisend' ) ) {
 			$meets_requirements['meets_requirements'] = false;
 			$meets_requirements['errors'][]           = 'Your Email Marketing by Omnisend is not up to date. Please update plugins';
 			return $meets_requirements;
 		}
 
-		if ( ! Omnisend\Sdk\V1\Omnisend::is_connected() ) {
+		if ( ! Omnisend\SDK\V1\Omnisend::is_connected() ) {
 			$meets_requirements['meets_requirements'] = false;
 			$meets_requirements['errors'][]           = 'Your Email Marketing by Omnisend is not configured properly. Please configure it firstly';
 		}
@@ -265,7 +265,7 @@ class OmnisendAddOn extends GFAddOn {
 	 * @param array $form The form currently being processed.
 	 */
 	public function after_submission( $entry, $form ) {
-		if ( ! class_exists( 'Omnisend\Sdk\V1\Omnisend' ) ) {
+		if ( ! class_exists( 'Omnisend\SDK\V1\Omnisend' ) ) {
 			return;
 		}
 
@@ -351,7 +351,7 @@ class OmnisendAddOn extends GFAddOn {
 
 			$this->mapCustomProperties( $form, $entry, $settings, $contact );
 
-			$response = \Omnisend\Sdk\V1\Omnisend::get_client( OMNISEND_GRAVITY_ADDON_NAME, OMNISEND_GRAVITY_ADDON_VERSION )->create_contact( $contact );
+			$response = \Omnisend\SDK\V1\Omnisend::get_client( OMNISEND_GRAVITY_ADDON_NAME, OMNISEND_GRAVITY_ADDON_VERSION )->create_contact( $contact );
 			if ( $response->get_wp_error()->has_errors() ) {
 				error_log( 'Error in after_submission: ' . $response->get_wp_error()->get_error_message()); // phpcs:ignore
 				return;
