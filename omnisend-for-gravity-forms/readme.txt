@@ -63,7 +63,7 @@ Read Omnisend [Terms of Use](https://www.omnisend.com/terms)
 
 = 1.2.0 =
 
-* Used Updated Omnisend plugin.
+* Use Updated Omnisend plugin.
 
 = 1.1.1 =
 
