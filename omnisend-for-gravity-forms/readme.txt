@@ -27,8 +27,8 @@ Using Gravity Forms Omnisend Add-On, you'll gain access to the Gravity Forms eas
 == REQUIREMENTS ==
 
 Omnisend for Gravity Forms add-on requires you to install:
-- Gravity Forms plugin
-- Omnisend plugin
+- [Gravity Forms plugin](https://www.gravityforms.com/)
+- [Omnisend plugin](https://wordpress.org/plugins/omnisend/)
 
 == FAQ ==
 
