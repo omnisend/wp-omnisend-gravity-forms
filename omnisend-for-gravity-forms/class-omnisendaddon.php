@@ -17,7 +17,7 @@ class OmnisendAddOn extends GFAddOn {
 
 	protected $_version                  = OMNISEND_GRAVITY_ADDON_VERSION; // phpcs:ignore
 	protected $_min_gravityforms_version = '1.9'; // phpcs:ignore
-	protected $_slug                     = 'omnisend-for-gravity-forms'; // phpcs:ignore
+	protected $_slug                     = 'omnisend-for-gravity-forms-add-on'; // phpcs:ignore
 	protected $_path                     = 'omnisend-for-gravity-forms/class-omnisend-addon-bootstrap.php'; // phpcs:ignore
 	protected $_full_path                = __FILE__; // phpcs:ignore
 	protected $_title                    = 'Omnisend for Gravity Forms'; // phpcs:ignore
