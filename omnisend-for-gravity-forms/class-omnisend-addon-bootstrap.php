@@ -2,12 +2,12 @@
 /**
  * Plugin Name: Omnisend for Gravity Forms Add-On
  * Description: A gravity forms add-on to sync contacts with Omnisend. In collaboration with Omnisnnd for WooCommerce plugin it enables better customer tracking
- * Version: 1.2.2
+ * Version: 1.2.3
  * Author: Omnisend
  * Author URI: https://www.omnisend.com
  * Developer: Omnisend
  * Developer URI: https://developers.omnisend.com
- * Text Domain: omnisend-for-gravity-forms-add-on
+ * Text Domain: omnisend-for-gravity-forms
  * ------------------------------------------------------------------------
  * Copyright 2023 Omnisend
  * License: GNU General Public License v3.0
@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 const OMNISEND_GRAVITY_ADDON_NAME    = 'Omnisend for Gravity Forms Add-On';
-const OMNISEND_GRAVITY_ADDON_VERSION = '1.2.2';
+const OMNISEND_GRAVITY_ADDON_VERSION = '1.2.3';
 
 add_action( 'gform_loaded', array( 'Omnisend_AddOn_Bootstrap', 'load' ), 5 );
 
