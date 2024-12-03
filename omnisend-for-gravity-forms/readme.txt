@@ -61,7 +61,7 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 
 == Changelog ==
 
-= 1.2.2 =
+= 1.2.3 =
 * Update tested WP version and security fixes
 
 = 1.2.2 =
