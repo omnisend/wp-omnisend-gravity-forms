@@ -5,7 +5,7 @@ Tags: Gravity forms, form, email marketing, web tracking, subscriber collection
 Requires at least: 4.7.0
 Tested up to: 6.7
 Requires PHP: 7.1
-Stable tag: 1.2.2
+Stable tag: 1.2.3
 License: GPLv3 or later
 URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -60,34 +60,30 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 7. Convert more visitors with highly-targeted landing pages
 
 == Changelog ==
-= 1.2.2 =
 
+= 1.2.2 =
+* Update tested WP version and security fixes
+
+= 1.2.2 =
 * Add Patchstack security vulnerability disclosure program link to faq.
 
 = 1.2.1 =
-
 * Update banner and plugin text.
 
 = 1.2.0 =
-
 * Use the Updated Omnisend plugin.
 
 = 1.1.1 =
-
 * Update plugin icon.
 
 = 1.1.0 =
-
 * Update functionality to depend on Omnisend core plugin.
 
 = 1.0.4 =
-
 * Minor usability improvements.
 
 = 1.0.3 =
-
 * Added support for welcome emails
 
 = 1.0.0 =
-
 * Initial release.
