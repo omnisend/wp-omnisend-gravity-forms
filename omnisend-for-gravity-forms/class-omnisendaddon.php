@@ -17,7 +17,7 @@ class OmnisendAddOn extends GFAddOn {
 
 	protected $_version                  = OMNISEND_GRAVITY_ADDON_VERSION; // phpcs:ignore
 	protected $_min_gravityforms_version = '1.9'; // phpcs:ignore
-	protected $_slug                     = 'omnisend-for-gravity-forms-add-on'; // phpcs:ignore
+	protected $_slug                     = 'omnisend-for-gravity-forms'; // phpcs:ignore
 	protected $_path                     = 'omnisend-for-gravity-forms/class-omnisend-addon-bootstrap.php'; // phpcs:ignore
 	protected $_full_path                = __FILE__; // phpcs:ignore
 	protected $_title                    = 'Omnisend for Gravity Forms'; // phpcs:ignore
@@ -146,15 +146,15 @@ class OmnisendAddOn extends GFAddOn {
 
 		return array(
 			array(
-				'title'  => esc_html__( 'Welcome Email', 'omnisend-for-gravity-forms-add-on' ),
+				'title'  => esc_html__( 'Welcome Email', 'omnisend-for-gravity-forms' ),
 				'fields' => array(
 					array(
-						'label'   => esc_html__( 'Check this to automatically send your custom welcome email, created in Omnisend, to subscribers joining through Gravity Forms.', 'omnisend-for-gravity-forms-add-on' ),
+						'label'   => esc_html__( 'Check this to automatically send your custom welcome email, created in Omnisend, to subscribers joining through Gravity Forms.', 'omnisend-for-gravity-forms' ),
 						'type'    => 'checkbox',
 						'name'    => 'send_welcome_email_checkbox',
 						'choices' => array(
 							array(
-								'label' => esc_html__( 'Send a welcome email to new subscribers', 'omnisend-for-gravity-forms-add-on' ),
+								'label' => esc_html__( 'Send a welcome email to new subscribers', 'omnisend-for-gravity-forms' ),
 								'name'  => 'send_welcome_email',
 							),
 						),
@@ -166,7 +166,7 @@ class OmnisendAddOn extends GFAddOn {
 				),
 			),
 			array(
-				'title'  => esc_html__( 'Omnisend Field Mapping', 'omnisend-for-gravity-forms-add-on' ),
+				'title'  => esc_html__( 'Omnisend Field Mapping', 'omnisend-for-gravity-forms' ),
 
 				'fields' => array(
 					array(
@@ -174,78 +174,78 @@ class OmnisendAddOn extends GFAddOn {
 						'name' => 'field_mapping_details',
 					),
 					array(
-						'label'               => esc_html__( 'Email', 'omnisend-for-gravity-forms-add-on' ),
+						'label'               => esc_html__( 'Email', 'omnisend-for-gravity-forms' ),
 						'type'                => 'select',
 						'name'                => 'email',
 						'validation_callback' => function ( $field, $value ) {
 							if ( $value <= 0 ) {
-								$field->set_error( esc_html__( 'Email is required', 'omnisend-for-gravity-forms-add-on' ) );
+								$field->set_error( esc_html__( 'Email is required', 'omnisend-for-gravity-forms' ) );
 							}
 						},
 						'choices'             => $all_fields_choices,
 					),
 					array(
-						'label'   => esc_html__( 'Address', 'omnisend-for-gravity-forms-add-on' ),
+						'label'   => esc_html__( 'Address', 'omnisend-for-gravity-forms' ),
 						'type'    => 'select',
 						'name'    => 'address',
 						'choices' => $all_fields_choices,
 					),
 					array(
-						'label'   => esc_html__( 'City', 'omnisend-for-gravity-forms-add-on' ),
+						'label'   => esc_html__( 'City', 'omnisend-for-gravity-forms' ),
 						'type'    => 'select',
 						'name'    => 'city',
 						'choices' => $all_fields_choices,
 					),
 					array(
-						'label'   => esc_html__( 'State', 'omnisend-for-gravity-forms-add-on' ),
+						'label'   => esc_html__( 'State', 'omnisend-for-gravity-forms' ),
 						'type'    => 'select',
 						'name'    => 'state',
 						'choices' => $all_fields_choices,
 					),
 					array(
-						'label'   => esc_html__( 'Country', 'omnisend-for-gravity-forms-add-on' ),
+						'label'   => esc_html__( 'Country', 'omnisend-for-gravity-forms' ),
 						'type'    => 'select',
 						'name'    => 'country',
 						'choices' => $all_fields_choices,
 					),
 					array(
-						'label'   => esc_html__( 'First Name', 'omnisend-for-gravity-forms-add-on' ),
+						'label'   => esc_html__( 'First Name', 'omnisend-for-gravity-forms' ),
 						'type'    => 'select',
 						'name'    => 'first_name',
 						'choices' => $all_fields_choices,
 					),
 					array(
-						'label'   => esc_html__( 'Last Name', 'omnisend-for-gravity-forms-add-on' ),
+						'label'   => esc_html__( 'Last Name', 'omnisend-for-gravity-forms' ),
 						'type'    => 'select',
 						'name'    => 'last_name',
 						'choices' => $all_fields_choices,
 					),
 					array(
-						'label'   => esc_html__( 'Phone Number', 'omnisend-for-gravity-forms-add-on' ),
+						'label'   => esc_html__( 'Phone Number', 'omnisend-for-gravity-forms' ),
 						'type'    => 'select',
 						'name'    => 'phone_number',
 						'choices' => $all_fields_choices,
 					),
 					array(
-						'label'   => esc_html__( 'Birthday', 'omnisend-for-gravity-forms-add-on' ),
+						'label'   => esc_html__( 'Birthday', 'omnisend-for-gravity-forms' ),
 						'type'    => 'select',
 						'name'    => 'birthday',
 						'choices' => $all_fields_choices,
 					),
 					array(
-						'label'   => esc_html__( 'Postal Code', 'omnisend-for-gravity-forms-add-on' ),
+						'label'   => esc_html__( 'Postal Code', 'omnisend-for-gravity-forms' ),
 						'type'    => 'select',
 						'name'    => 'postal_code',
 						'choices' => $all_fields_choices,
 					),
 					array(
-						'label'   => esc_html__( 'Email Consent', 'omnisend-for-gravity-forms-add-on' ),
+						'label'   => esc_html__( 'Email Consent', 'omnisend-for-gravity-forms' ),
 						'type'    => 'select',
 						'name'    => 'email_consent',
 						'choices' => $consent_fields_choices,
 					),
 					array(
-						'label'   => esc_html__( 'Phone Consent', 'omnisend-for-gravity-forms-add-on' ),
+						'label'   => esc_html__( 'Phone Consent', 'omnisend-for-gravity-forms' ),
 						'type'    => 'select',
 						'name'    => 'phone_consent',
 						'choices' => $consent_fields_choices,
@@ -418,16 +418,16 @@ class OmnisendAddOn extends GFAddOn {
 	}
 
 	public function settings_welcome_automation_details( $field, $echo = true ) { // phpcs:ignore
-		echo '<div class="gform-settings-field">' . esc_html__( 'After checking this, don’t forget to design your welcome email in Omnisend.', 'omnisend-for-gravity-forms-add-on' ) . '</div>';
-		echo '<a target="_blank" href="https://support.omnisend.com/en/articles/1061818-welcome-email-automation">' . esc_html__( 'Learn more about Welcome automation', 'omnisend-for-gravity-forms-add-on' ) . '</a>';
+		echo '<div class="gform-settings-field">' . esc_html__( 'After checking this, don’t forget to design your welcome email in Omnisend.', 'omnisend-for-gravity-forms' ) . '</div>';
+		echo '<a target="_blank" href="https://support.omnisend.com/en/articles/1061818-welcome-email-automation">' . esc_html__( 'Learn more about Welcome automation', 'omnisend-for-gravity-forms' ) . '</a>';
 	}
 
 
 	public function settings_field_mapping_details() {
-		echo '<div class="gform-settings-field">' . esc_html__( 'Field mapping lets you align your form fields with Omnisend. It\'s important to match them correctly, so the information collected through Gravity Forms goes into the right place in Omnisend.', 'omnisend-for-gravity-forms-add-on' ) . '</div>';
+		echo '<div class="gform-settings-field">' . esc_html__( 'Field mapping lets you align your form fields with Omnisend. It\'s important to match them correctly, so the information collected through Gravity Forms goes into the right place in Omnisend.', 'omnisend-for-gravity-forms' ) . '</div>';
 
 		echo '<img width="900" src="' . plugins_url( '/images/omnisend-field-mapping.png', __FILE__ ) . '" alt="Omnisend Field Mapping" />'; // phpcs:ignore
 
-		echo '<div class="alert gforms_note_info">' . esc_html__( 'Having trouble? Explore our help article.', 'omnisend-for-gravity-forms-add-on' ) . '<br/><a target="_blank" href="https://support.omnisend.com/en/articles/8617559-integration-with-gravity-forms">' . esc_html__( 'Learn more', 'omnisend-for-gravity-forms-add-on' ) . '</a></div>';
+		echo '<div class="alert gforms_note_info">' . esc_html__( 'Having trouble? Explore our help article.', 'omnisend-for-gravity-forms' ) . '<br/><a target="_blank" href="https://support.omnisend.com/en/articles/8617559-integration-with-gravity-forms">' . esc_html__( 'Learn more', 'omnisend-for-gravity-forms' ) . '</a></div>';
 	}
 }

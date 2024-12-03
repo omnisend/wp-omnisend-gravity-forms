@@ -7,7 +7,7 @@
  * Author URI: https://www.omnisend.com
  * Developer: Omnisend
  * Developer URI: https://developers.omnisend.com
- * Text Domain: omnisend-for-gravity-forms-add-on
+ * Text Domain: omnisend-for-gravity-forms
  * ------------------------------------------------------------------------
  * Copyright 2023 Omnisend
  * License: GNU General Public License v3.0
