@@ -447,7 +447,7 @@ class OmnisendAddOn extends GFAddOn {
 
 	public function settings_double_opt_in_details( $field, $echo = true ) { // phpcs:ignore
 		echo '<div class="gform-settings-field">' . esc_html__( 'After checking this, don’t forget to setup custom automations for your double opt-in workflow in Omnisend.', 'omnisend-for-gravity-forms' ) . '</div>';
-		echo '<a target="_blank" href="https://support.omnisend.com/">' . esc_html__( 'Learn more about Double Opt-In for GravityForms', 'omnisend-for-gravity-forms' ) . '</a>';
+		echo '<a target="_blank" href="https://support.omnisend.com/en/articles/12294261-alternative-double-opt-in">' . esc_html__( 'Learn more about Double Opt-In for GravityForms', 'omnisend-for-gravity-forms' ) . '</a>';
 	}
 
 	public function settings_field_mapping_details() {
