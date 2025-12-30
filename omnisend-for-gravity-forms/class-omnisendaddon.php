@@ -165,6 +165,26 @@ class OmnisendAddOn extends GFAddOn {
 					),
 				),
 			),
+            array(
+				'title'  => esc_html__( 'Double Opt-In', 'omnisend-for-gravity-forms' ),
+				'fields' => array(
+					array(
+						'label'   => esc_html__( 'Check this to enable double opt-in for new subscribers.', 'omnisend-for-gravity-forms' ),
+						'type'    => 'checkbox',
+						'name'    => 'enable_double_opt_in',
+						'choices' => array(
+							array(
+								'label' => esc_html__( 'Enable double opt-in', 'omnisend-for-gravity-forms' ),
+								'name'  => 'double_opt_in',
+							),
+						),
+					),
+					array(
+						'type' => 'double_opt_in_details',
+						'name' => 'double_opt_in_details',
+					),
+				),
+			),
 			array(
 				'title'  => esc_html__( 'Omnisend Field Mapping', 'omnisend-for-gravity-forms' ),
 
@@ -335,10 +355,15 @@ class OmnisendAddOn extends GFAddOn {
 			$contact->add_tag( 'gravity_forms' );
 			$contact->add_tag( 'gravity_forms ' . $form['title'] );
 
-			if ( $email_consent ) {
-				$contact->set_email_consent( 'gravity-forms' );
-				$contact->set_email_opt_in( 'gravity-forms' );
-			}
+            // Respect both the double-opt-in setting *and* the submitter’s consent choice
+            if ( $email_consent ) {
+                if ( isset( $settings['double_opt_in'] ) && $settings['double_opt_in'] == '1' ) {
+                    $contact->set_email_consent( 'gravity-forms' );
+                } else {
+                    $contact->set_email_consent( 'gravity-forms' );
+                    $contact->set_email_opt_in( 'gravity-forms' );
+                }
+            }
 
 			if ( $phone_consent ) {
 				$contact->set_phone_consent( 'gravity-forms' ); // todo looks a bit strange. Maybe one function is enough?
@@ -422,6 +447,10 @@ class OmnisendAddOn extends GFAddOn {
 		echo '<a target="_blank" href="https://support.omnisend.com/en/articles/1061818-welcome-email-automation">' . esc_html__( 'Learn more about Welcome automation', 'omnisend-for-gravity-forms' ) . '</a>';
 	}
 
+	public function settings_double_opt_in_details( $field, $echo = true ) { // phpcs:ignore
+		echo '<div class="gform-settings-field">' . esc_html__( 'After checking this, don’t forget to setup custom automations for your double opt-in workflow in Omnisend.', 'omnisend-for-gravity-forms' ) . '</div>';
+		echo '<a target="_blank" href="https://support.omnisend.com/en/articles/12294261-alternative-double-opt-in">' . esc_html__( 'Learn more about Double Opt-In for GravityForms', 'omnisend-for-gravity-forms' ) . '</a>';
+	}
 
 	public function settings_field_mapping_details() {
 		echo '<div class="gform-settings-field">' . esc_html__( 'Field mapping lets you align your form fields with Omnisend. It\'s important to match them correctly, so the information collected through Gravity Forms goes into the right place in Omnisend.', 'omnisend-for-gravity-forms' ) . '</div>';
