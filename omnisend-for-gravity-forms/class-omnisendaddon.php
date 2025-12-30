@@ -165,7 +165,7 @@ class OmnisendAddOn extends GFAddOn {
 					),
 				),
 			),
-            array(
+			array(
 				'title'  => esc_html__( 'Double Opt-In', 'omnisend-for-gravity-forms' ),
 				'fields' => array(
 					array(
@@ -355,15 +355,15 @@ class OmnisendAddOn extends GFAddOn {
 			$contact->add_tag( 'gravity_forms' );
 			$contact->add_tag( 'gravity_forms ' . $form['title'] );
 
-            // Respect both the double-opt-in setting *and* the submitter’s consent choice
-            if ( $email_consent ) {
-                if ( isset( $settings['double_opt_in'] ) && $settings['double_opt_in'] == '1' ) {
-                    $contact->set_email_consent( 'gravity-forms' );
-                } else {
-                    $contact->set_email_consent( 'gravity-forms' );
-                    $contact->set_email_opt_in( 'gravity-forms' );
-                }
-            }
+			// Respect both the double-opt-in setting *and* the submitter’s consent choice.
+			if ( $email_consent ) {
+				if ( isset( $settings['double_opt_in'] ) && $settings['double_opt_in'] == '1' ) {
+					$contact->set_email_consent( 'gravity-forms' );
+				} else {
+					$contact->set_email_consent( 'gravity-forms' );
+					$contact->set_email_opt_in( 'gravity-forms' );
+				}
+			}
 
 			if ( $phone_consent ) {
 				$contact->set_phone_consent( 'gravity-forms' ); // todo looks a bit strange. Maybe one function is enough?
