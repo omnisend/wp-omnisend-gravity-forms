@@ -36,7 +36,7 @@ Omnisend for Gravity Forms add-on requires you to install:
 Read [Installation instructions](https://support.omnisend.com/en/articles/8617559-integration-with-gravity-forms)
 
 = What are the technical requirements for the plugin installation? =
-* PHP 7.1+
+* PHP 7.4+
 * WordPress 4.0.1+
 * Omnisend account
 
