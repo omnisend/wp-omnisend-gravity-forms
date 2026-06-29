@@ -3,9 +3,9 @@ Plugin Name: Omnisend for Gravity Forms Add-On
 Contributors: Omnisend
 Tags: Gravity forms, form, email marketing, web tracking, subscriber collection
 Requires at least: 4.7.0
-Tested up to: 6.9
-Requires PHP: 7.1
-Stable tag: 1.2.8
+Tested up to: 7.0
+Requires PHP: 7.4
+Stable tag: 1.2.9
 License: GPLv3 or later
 URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -36,7 +36,7 @@ Omnisend for Gravity Forms add-on requires you to install:
 Read [Installation instructions](https://support.omnisend.com/en/articles/8617559-integration-with-gravity-forms)
 
 = What are the technical requirements for the plugin installation? =
-* PHP 7.1+
+* PHP 7.4+
 * WordPress 4.0.1+
 * Omnisend account
 
@@ -60,6 +60,10 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 7. Convert more visitors with highly-targeted landing pages
 
 == Changelog ==
+
+= 1.2.9 =
+* Updated for WordPress 7.0 compatibility.
+* Bumped minimum PHP requirement to 7.4.
 
 = 1.2.8 =
 * Verified compatibility with WordPress 6.9
