@@ -73,6 +73,25 @@ class OmnisendAddOn extends GFAddOn {
 	public function init() {
 		parent::init();
 		add_action( 'gform_after_submission', array( $this, 'after_submission' ), 10, 2 );
+		add_action( 'admin_init', array( $this, 'add_privacy_policy_content' ) );
+	}
+
+	/**
+	 * Suggests privacy policy text for site administrators, as recommended by the
+	 * WordPress privacy policy content API for plugins that collect user data.
+	 */
+	public function add_privacy_policy_content() {
+		if ( ! function_exists( 'wp_add_privacy_policy_content' ) ) {
+			return;
+		}
+
+		$content =
+			'<p>' . esc_html__( 'When you submit a Gravity Forms form on this site, the Omnisend for Gravity Forms Add-On sends the personal data you provide to Omnisend for email and SMS marketing purposes. Depending on how the form is configured, this may include your email address, phone number, first and last name, birthday, address, city, state, country, postal code, your consent choices, and any other form fields you fill in.', 'omnisend-for-gravity-forms' ) . '</p>' .
+			'<p>' . esc_html__( 'This data is transmitted to and stored by Omnisend, a third-party service, and is retained there according to Omnisend’s data retention practices for as long as your contact record exists. The plugin itself does not store this data separately in your WordPress database beyond the standard Gravity Forms entries.', 'omnisend-for-gravity-forms' ) . '</p>' .
+			'<p>' . esc_html__( 'When the accompanying Omnisend plugin is active, a tracking snippet may also set cookies in visitors’ browsers to identify contacts and track their activity on the site.', 'omnisend-for-gravity-forms' ) . '</p>' .
+			'<p>' . esc_html__( 'You have the right to request access to, export of, or deletion of your personal data. For details on how Omnisend processes personal data and how to exercise these rights, see Omnisend’s Privacy Policy at https://www.omnisend.com/privacy/ and Terms of Use at https://www.omnisend.com/terms.', 'omnisend-for-gravity-forms' ) . '</p>';
+
+		wp_add_privacy_policy_content( OMNISEND_GRAVITY_ADDON_NAME, wp_kses_post( $content ) );
 	}
 
 
