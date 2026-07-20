@@ -89,7 +89,12 @@ class OmnisendAddOn extends GFAddOn {
 			'<p>' . esc_html__( 'When you submit a Gravity Forms form on this site, the Omnisend for Gravity Forms Add-On sends the personal data you provide to Omnisend for email and SMS marketing purposes. Depending on how the form is configured, this may include your email address, phone number, first and last name, birthday, address, city, state, country, postal code, your consent choices, and any other form fields you fill in.', 'omnisend-for-gravity-forms' ) . '</p>' .
 			'<p>' . esc_html__( 'This data is transmitted to and stored by Omnisend, a third-party service, and is retained there according to Omnisend’s data retention practices for as long as your contact record exists. The plugin itself does not store this data separately in your WordPress database beyond the standard Gravity Forms entries.', 'omnisend-for-gravity-forms' ) . '</p>' .
 			'<p>' . esc_html__( 'When the accompanying Omnisend plugin is active, a tracking snippet may also set cookies in visitors’ browsers to identify contacts and track their activity on the site.', 'omnisend-for-gravity-forms' ) . '</p>' .
-			'<p>' . esc_html__( 'You have the right to request access to, export of, or deletion of your personal data. For details on how Omnisend processes personal data and how to exercise these rights, see Omnisend’s Privacy Policy at https://www.omnisend.com/privacy/ and Terms of Use at https://www.omnisend.com/terms.', 'omnisend-for-gravity-forms' ) . '</p>';
+			'<p>' . sprintf(
+				/* translators: 1: Omnisend Privacy Policy URL, 2: Omnisend Terms of Use URL */
+				esc_html__( 'You have the right to request access to, export of, or deletion of your personal data. For details on how Omnisend processes personal data and how to exercise these rights, see Omnisend’s Privacy Policy at %1$s and Terms of Use at %2$s.', 'omnisend-for-gravity-forms' ),
+				'<a href="https://www.omnisend.com/privacy/" target="_blank">https://www.omnisend.com/privacy/</a>',
+				'<a href="https://www.omnisend.com/terms" target="_blank">https://www.omnisend.com/terms</a>'
+			) . '</p>';
 
 		wp_add_privacy_policy_content( OMNISEND_GRAVITY_ADDON_NAME, wp_kses_post( $content ) );
 	}
