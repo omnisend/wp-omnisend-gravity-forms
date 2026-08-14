@@ -1,7 +1,9 @@
-# Omnisend Add-on for Gravity Forms WordPress plugin
+# Omnisend for Gravity Forms Add-On
 
-Plugin (Add-On) for Gravity forms Wordpress plugin.
+Connects Gravity Forms submissions to Omnisend so form contacts can be synced for email/SMS marketing.
 
-More information can be found [here](https://docs.gravityforms.com/category/developers/php-api/add-on-framework/).
+Requires [Gravity Forms](https://www.gravityforms.com/) and the [Omnisend](https://wordpress.org/plugins/omnisend/) plugin.
 
-Link to plugin in Wordpress app store: [link](https://wordpress.org/plugins/omnisend-for-gravity-forms-add-on/).
+WordPress plugin: https://wordpress.org/plugins/omnisend-for-gravity-forms-add-on/
+
+More information on Gravity Forms add-ons can be found [here](https://docs.gravityforms.com/category/developers/php-api/add-on-framework/).
