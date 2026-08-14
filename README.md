@@ -2,7 +2,7 @@
 
 Connects Gravity Forms submissions to Omnisend so form contacts can be synced for email/SMS marketing.
 
-Requires the [Omnisend](https://wordpress.org/plugins/omnisend/) plugin.
+Requires [Gravity Forms](https://www.gravityforms.com/) and the [Omnisend](https://wordpress.org/plugins/omnisend/) plugin.
 
 WordPress plugin: https://wordpress.org/plugins/omnisend-for-gravity-forms-add-on/
 
