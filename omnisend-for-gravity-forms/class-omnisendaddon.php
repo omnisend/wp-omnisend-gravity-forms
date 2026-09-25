@@ -16,7 +16,7 @@ GFForms::include_addon_framework();
 class OmnisendAddOn extends GFAddOn {
 
 	protected $_version                  = OMNISEND_GRAVITY_ADDON_VERSION; // phpcs:ignore
-	protected $_min_gravityforms_version = '1.9'; // phpcs:ignore
+	protected $_min_gravityforms_version = '1.9.12'; // phpcs:ignore
 	protected $_slug                     = 'omnisend-for-gravity-forms-add-on'; // phpcs:ignore
 	protected $_path                     = 'omnisend-for-gravity-forms/class-omnisend-addon-bootstrap.php'; // phpcs:ignore
 	protected $_full_path                = __FILE__; // phpcs:ignore
@@ -359,6 +359,9 @@ class OmnisendAddOn extends GFAddOn {
 			}
 
 			if ( $email == '' ) {
+				if ( isset( $settings['email'] ) && $settings['email'] != '-1' ) {
+					$this->addSyncNote( $entry['id'], esc_html__( 'Contact not synced to Omnisend: the email field value is empty.', 'omnisend-for-gravity-forms' ) );
+				}
 				return; // Email is not mapped. Skipping Omnisend contact creation.
 			}
 
@@ -402,16 +405,57 @@ class OmnisendAddOn extends GFAddOn {
 
 			$response = \Omnisend\SDK\V1\Omnisend::get_client( OMNISEND_GRAVITY_ADDON_NAME, OMNISEND_GRAVITY_ADDON_VERSION )->create_contact( $contact );
 			if ( $response->get_wp_error()->has_errors() ) {
-				error_log( 'Error in after_submission: ' . $response->get_wp_error()->get_error_message()); // phpcs:ignore
+				$error_message = $response->get_wp_error()->get_error_message();
+				error_log( 'Error in after_submission: ' . $error_message ); // phpcs:ignore
+				$this->addSyncNote(
+					$entry['id'],
+					sprintf(
+						/* translators: %s: error message from the Omnisend API */
+						esc_html__( 'Failed to sync contact to Omnisend: %s', 'omnisend-for-gravity-forms' ),
+						wp_strip_all_tags( $error_message )
+					)
+				);
 				return;
 			}
+
+			$this->addSyncNote(
+				$entry['id'],
+				sprintf(
+					/* translators: %s: Omnisend contact ID */
+					esc_html__( 'Contact synced to Omnisend successfully. Contact ID: %s', 'omnisend-for-gravity-forms' ),
+					$response->get_contact_id()
+				)
+			);
 
 			$this->enableWebTracking( $email, $phone_number );
 
 		} catch ( Exception $e ) {
 			// todo check if it is possible to get exception? If not remove handling.
 			error_log( 'Error in after_submission: ' . $e->getMessage() ); // phpcs:ignore
+			$this->addSyncNote(
+				$entry['id'],
+				sprintf(
+					/* translators: %s: error message from the caught exception */
+					esc_html__( 'Failed to sync contact to Omnisend: %s', 'omnisend-for-gravity-forms' ),
+					wp_strip_all_tags( $e->getMessage() )
+				)
+			);
 		}
+	}
+
+	/**
+	 * Adds a note to the entry with the result of the Omnisend sync.
+	 *
+	 * @param int    $entry_id Entry ID.
+	 * @param string $message  Note content.
+	 */
+	private function addSyncNote( $entry_id, $message ) {
+		// add_note() is only available since Gravity Forms 1.9.12.
+		if ( empty( $entry_id ) || ! method_exists( $this, 'add_note' ) ) {
+			return;
+		}
+
+		$this->add_note( absint( $entry_id ), $message );
 	}
 
 	private function mapCustomProperties( $form, $entry, $settings, Contact $contact ) {

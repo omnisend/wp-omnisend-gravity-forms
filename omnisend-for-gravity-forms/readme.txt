@@ -5,7 +5,7 @@ Tags: Gravity forms, form, email marketing, web tracking, subscriber collection
 Requires at least: 4.7.0
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.3.1
+Stable tag: 1.4.0
 License: GPLv3 or later
 URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -23,6 +23,7 @@ Using Gravity Forms Omnisend Add-On, you'll gain access to the Gravity Forms eas
 * Customize your integration settings to your store needs.
 * Import and export your forms.
 * Integrate with additional add-ons.
+* See on each entry whether the contact was synced to Omnisend, including the Omnisend contact ID or the error message when the sync fails.
 
 == REQUIREMENTS ==
 
@@ -60,6 +61,9 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 7. Convert more visitors with highly-targeted landing pages
 
 == Changelog ==
+
+= 1.4.0 =
+* Omnisend sync results are now logged as notes on Gravity Forms entries, showing the contact ID on success and the error message on failure.
 
 = 1.3.1 =
 * Confirmed compatibility with WordPress 7.1.
