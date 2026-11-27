@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-alias composer='docker run --rm -it -v "$(pwd):/app" composer/composer'
-
 action=$1
 
 case $action in
